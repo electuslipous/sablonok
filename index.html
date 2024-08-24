@@ -4,16 +4,87 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Pepe's Sablonok</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body>
-    <h1>Hello, world!</h1>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+<body
+    class="mt-5 border border-danger vw-100 bg-dark text-light d-flex flex-column justify-content-center align-items-center">
+    <div>
+        <h3 class="text-center">Jeleng</h3>
+        <button onclick="fetchData('jeleng')" class="btn btn-primary">
+            Negative
+        </button>
+    </div>
+    <div class="mt-4">
+        <h3 class="text-center">Status</h3>
+        <div>
+            <button onclick="fetchData('status','complete')" class="btn btn-success">COMPLETE</button>
+            <button onclick="fetchData('status','no_neuro')" class="btn btn-success">NO NEURO</button>
+            <button onclick="fetchData('status','vakbel')" class="btn btn-success">VAKBEL</button>
+        </div>
+    </div>
+    <div class="mt-4 w-100">
+        <h3 class="text-center">Kerolap</h3>
+        <div class="row">
+            <div class="col-6 border p-4">
+                <h5 class="bg-dark">RTG</h5>
+                <button onclick="fetchData('kerolap','rtg','alap')" class="btn btn-secondary">ALAP</button>
+                <button onclick="fetchData('kerolap','rtg','alap')" class="btn btn-secondary">MELLKASI</button>
+                <button onclick="fetchData('kerolap','rtg','alap')" class="btn btn-secondary">Vakbel</button>
+            </div>
+            <div class="col-6 p-4">
+                <h5>UH</h5>
+                <button onclick="fetchData('kerolap','uh','alap')" class="btn btn-secondary">ALAP</button>
+                <button onclick="fetchData('kerolap','uh','gyomor_nyombel_fekely')"
+                    class="btn btn-secondary">GYOMORFEKÉLY ÉS
+                    NYOMBÉLFEKÉLY</button>
+                <button onclick="fetchData('kerolap','uh','epeko_epeholyag_gyulladas')" class="btn btn-secondary">EPEKŐ
+                    ÉS
+                    EPEHÓLYAG-GYULLADÁS</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function fetchData(category, ...keys) {
+            try {
+                // Fetch the JSON data
+                const res = await fetch("/data.json");
+                const jsonData = await res.json();
+
+                // Navigate through the JSON data to get the desired value
+                let data = jsonData[category];
+                for (const key of keys) {
+                    data = data[key];
+                }
+
+                // Print the result to the console
+                console.log(data);
+
+                // Copy the result to the clipboard
+                toClipBoard(data);
+            } catch (error) {
+                console.error('Error fetching or parsing data:', error);
+            }
+        }
+
+        function toClipBoard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const alertDiv = document.createElement('div')
+                    alertDiv.innerHTML = `<div class="alert alert-success" style="position: absolute; right:10px; top: 10px;" role="alert">Text copied to clipboard successfully!</div>`
+                    document.body.appendChild(alertDiv)
+                    setTimeout(() => {
+                        alertDiv.remove();
+                    }, 2000);
+                    console.log('Text copied to clipboard successfully!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy text to clipboard: ', err);
+                });
+        }
+    </script>
 </body>
 
 </html>
